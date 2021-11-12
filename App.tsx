@@ -1,99 +1,45 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section: React.FC<{
-  title: string;
-}> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import * as RN from 'react-native';
+import {MessageButton} from './components/MessageButton';
+import {ReaderContainer} from './components/Reader';
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [shouldShowReader, setShouldShowReader] =
+    React.useState<boolean>(false);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const [isScanned, setIsScanned] = React.useState<boolean>(false);
+
+  const openCamera = () => {
+    setIsScanned(false);
+    setShouldShowReader(true);
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+  const onGoBack = () => setShouldShowReader(false);
+
+  const scanCode = (value: any) => {
+    console.log('scanned');
+    //https://github.com/teslamotors/react-native-camera-kit
+    // scanning result type is not typed, but the value we want to get is in nativeEvent.codeStringValue --> value.nativeEvent.codeStringValue
+    if (isScanned) {
+      return;
+    }
+
+    const code = value.nativeEvent.codeStringValue;
+    setShouldShowReader(false);
+    setIsScanned(true);
+    RN.Alert.alert(code);
+  };
+
+  return shouldShowReader ? (
+    <ReaderContainer onGoBack={onGoBack} scanBarcode={scanCode} />
+  ) : (
+    <RN.SafeAreaView>
+      <MessageButton message="Scan Covid-19 Certificate" onPress={openCamera} />
+    </RN.SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = RN.StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
