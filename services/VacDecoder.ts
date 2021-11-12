@@ -91,17 +91,8 @@ export type VacCertData = t.TypeOf<typeof VacCertData>;
 const decodeVacPass = (data: string): Either<string, VacPass> => {
   const removedBeginning = data.replace('HC1:', '');
   let result = decodeBase45(removedBeginning);
-  if (result[0] === 0x78) {
-    const afterPako = zlib.inflate(result);
-    const decoded = cbor.decode(afterPako.buffer);
-    const payload = cbor.decode(decoded.value[2]);
-    const cert = payload.get(-260).get(1);
-    const resultDecoded = E.isRight(VacPassAll.decode(cert))
-      ? E.right(cert)
-      : E.left('Error decoding VacPass');
-    return resultDecoded;
-  }
-  const decoded = cbor.decode(result.buffer);
+  const next = result[0] === 0x78 ? zlib.inflate(result) : result.buffer;
+  const decoded = cbor.decode(next);
   const payload = cbor.decode(decoded.value[2]);
   const cert = payload.get(-260).get(1);
   const resultDecoded = E.isRight(VacPassAll.decode(cert))

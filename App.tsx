@@ -6,8 +6,6 @@ import {ReaderContainer} from './components/Reader';
 
 import {decodeService, VacPass} from './services/VacDecoder';
 
-import * as E from 'fp-ts/lib/Either';
-
 const App = () => {
   const [shouldShowReader, setShouldShowReader] =
     React.useState<boolean>(false);
@@ -33,9 +31,7 @@ const App = () => {
     setShouldShowReader(false);
     setIsScanned(true);
     const data = decodeService.decodeVacPass(code);
-    if (E.isRight(data)) {
-      console.log(data);
-    }
+    console.log(data);
   };
 
   return shouldShowReader ? (
