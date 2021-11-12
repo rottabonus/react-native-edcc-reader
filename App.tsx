@@ -4,13 +4,26 @@ import * as RN from 'react-native';
 import {MessageButton} from './components/MessageButton';
 import {ReaderContainer} from './components/Reader';
 
+import * as E from 'fp-ts/lib/Either';
 import {decodeService, VacPass} from './services/VacDecoder';
+import {VacCard} from './components/VacCard';
+
+type VacPassState =
+  | {
+      pass: false;
+      data: {};
+    }
+  | {pass: true; data: VacPass};
 
 const App = () => {
   const [shouldShowReader, setShouldShowReader] =
     React.useState<boolean>(false);
 
   const [isScanned, setIsScanned] = React.useState<boolean>(false);
+  const [vacPass, setVacPass] = React.useState<VacPassState>({
+    pass: false,
+    data: {},
+  });
 
   const openCamera = () => {
     setIsScanned(false);
@@ -20,18 +33,22 @@ const App = () => {
   const onGoBack = () => setShouldShowReader(false);
 
   const scanCode = (value: any) => {
-    console.log('scanned');
     //https://github.com/teslamotors/react-native-camera-kit
     // scanning result type is not typed, but the value we want to get is in nativeEvent.codeStringValue --> value.nativeEvent.codeStringValue
+    const code: string = value.nativeEvent.codeStringValue;
+
     if (isScanned) {
       return;
     }
 
-    const code: string = value.nativeEvent.codeStringValue;
     setShouldShowReader(false);
     setIsScanned(true);
     const data = decodeService.decodeVacPass(code);
-    console.log(data);
+    const nextState: VacPassState = E.isRight(data)
+      ? {pass: true, data: data.right}
+      : {pass: false, data: {}};
+
+    setVacPass(nextState);
   };
 
   return shouldShowReader ? (
@@ -39,27 +56,9 @@ const App = () => {
   ) : (
     <RN.SafeAreaView>
       <MessageButton message="Scan Covid-19 Certificate" onPress={openCamera} />
+      {vacPass.pass && <VacCard data={vacPass.data} />}
     </RN.SafeAreaView>
   );
 };
-
-const styles = RN.StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
