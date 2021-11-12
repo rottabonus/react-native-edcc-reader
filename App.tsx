@@ -1,7 +1,12 @@
 import React from 'react';
 import * as RN from 'react-native';
+
 import {MessageButton} from './components/MessageButton';
 import {ReaderContainer} from './components/Reader';
+
+import {decodeService, VacPass} from './services/VacDecoder';
+
+import * as E from 'fp-ts/lib/Either';
 
 const App = () => {
   const [shouldShowReader, setShouldShowReader] =
@@ -24,10 +29,13 @@ const App = () => {
       return;
     }
 
-    const code = value.nativeEvent.codeStringValue;
+    const code: string = value.nativeEvent.codeStringValue;
     setShouldShowReader(false);
     setIsScanned(true);
-    RN.Alert.alert(code);
+    const data = decodeService.decodeVacPass(code);
+    if (E.isRight(data)) {
+      console.log(data);
+    }
   };
 
   return shouldShowReader ? (

@@ -15,4 +15,9 @@ module.exports = {
     }),
     assetPlugins: ['react-native-svg-asset-plugin'],
   },
+  resolver: {
+    extraNodeModules: {
+      stream: require.resolve('stream-browserify'),
+    },
+  },
 };
