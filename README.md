@@ -1,5 +1,7 @@
 # react-native-edcc-reader
  React Native implementation of <strong>[European Digital Covid Certificate](https://ec.europa.eu/info/live-work-travel-eu/coronavirus-response/safe-covid-19-vaccines-europeans/eu-digital-covid-certificate_en) reader</strong>
+ 
+<strong>Not verifying signature!</strong>, only decoding the certificate!
 
 ### dependencies
 
@@ -17,7 +19,7 @@
 2. [Set up react-native development environment](https://reactnative.dev/docs/environment-setup)
 
  ```console
-$ cd react-native-edcc-decoder
+$ cd react-native-edcc-reader
 $ npm i
 ```
 
