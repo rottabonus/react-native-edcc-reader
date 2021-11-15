@@ -87,6 +87,7 @@ const VacPassAll = t.union([VacPassCodecV, VacPassCodecR, VacPassCodecT]);
 
 export type VacPass = t.TypeOf<typeof VacPassAll>;
 export type VacCertData = t.TypeOf<typeof VacCertData>;
+export type VacPassName = t.TypeOf<typeof VacPassName>;
 
 const decodeVacPass = (data: string): Either<string, VacPass> => {
   const removedBeginning = data.replace('HC1:', '');
@@ -104,22 +105,29 @@ const decodeVacPass = (data: string): Either<string, VacPass> => {
 export type VacData = {
   type: 'vaccine';
   date: string;
+  numberOfDose: number;
+  seriesDoses: number;
   product: string;
   issuer: string;
+  nam: VacPassName;
 };
 
 export type RecData = {
   type: 'recovery';
+  disease: string;
   dateFrom: string;
   dateUntil: string;
   issuer: string;
+  nam: VacPassName;
 };
 
 export type TestData = {
   type: 'test';
   date: string;
-  result: string;
+  result: 'Detected' | 'Not detected';
   issuer: string;
+  facility: string;
+  nam: VacPassName;
 };
 
 const mapCertData = (
@@ -127,14 +135,20 @@ const mapCertData = (
 ): VacData | RecData | TestData | {type: 'nothing'} => {
   if ('v' in data) {
     return {
+      nam: data.nam,
       type: 'vaccine',
       date: data.v[0].dt,
+      numberOfDose: data.v[0].dn,
+      seriesDoses: data.v[0].sd,
       product: data.v[0].mp,
       issuer: data.v[0].is,
     };
   }
   if ('r' in data) {
+    const disease = data.r[0].tg === '840539006' ? 'COVID-19' : data.r[0].tg;
     return {
+      nam: data.nam,
+      disease,
       type: 'recovery',
       dateFrom: data.r[0].df,
       dateUntil: data.r[0].du,
@@ -142,10 +156,13 @@ const mapCertData = (
     };
   }
   if ('t' in data) {
+    const result = data.t[0].tr === '260415000' ? 'Detected' : 'Not detected';
     return {
+      nam: data.nam,
       type: 'test',
       date: data.t[0].sc,
-      result: data.t[0].tr,
+      result,
+      facility: data.t[0].tc,
       issuer: data.t[0].is,
     };
   }

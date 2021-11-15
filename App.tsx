@@ -54,11 +54,43 @@ const App = () => {
   return shouldShowReader ? (
     <ReaderContainer onGoBack={onGoBack} scanBarcode={scanCode} />
   ) : (
-    <RN.SafeAreaView>
-      <MessageButton message="Scan Covid-19 Certificate" onPress={openCamera} />
-      {vacPass.pass && <VacCard data={vacPass.data} />}
+    <RN.SafeAreaView style={styles.container}>
+      <RN.View style={styles.card}>
+        {vacPass.pass && <VacCard data={vacPass.data} />}
+        <MessageButton
+          message="Scan Covid-19 Certificate"
+          onPress={openCamera}
+        />
+      </RN.View>
     </RN.SafeAreaView>
   );
 };
+
+const styles = RN.StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'cornsilk',
+  },
+  card: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    margin: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    backgroundColor: 'darkseagreen',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
+  },
+});
 
 export default App;

@@ -23,8 +23,8 @@ export const ReaderContainer: React.FC<Props> = ({
         style={styles.camera}
         showFrame={true}
         scanBarcode={true}
-        laserColor={'blue'}
-        frameColor={'gray'}
+        laserColor={'darkseagreen'}
+        frameColor={'cornsilk'}
       />
       <BackButton onPress={onGoBack} style={styles.backButton} />
     </RN.View>

@@ -14,13 +14,22 @@ export const VacCard: React.FC<Props> = ({data}) => {
   const mapped = decodeService.mapCertData(data);
 
   return (
-    <RN.View>
-      <RN.Text>
-        {data.nam.gn} {data.nam.fn}
-      </RN.Text>
+    <RN.View style={styles.container}>
       {mapped.type === 'vaccine' && <VaccinationDataView data={mapped} />}
       {mapped.type === 'recovery' && <RecoveryDataView data={mapped} />}
       {mapped.type === 'test' && <TestDataView data={mapped} />}
     </RN.View>
   );
 };
+
+const styles = RN.StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    borderRadius: 16,
+    marginVertical: 16,
+  },
+});

@@ -33,6 +33,6 @@ const styles = RN.StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor: 'green',
+    backgroundColor: 'white',
   },
 });

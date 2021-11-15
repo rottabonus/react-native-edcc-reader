@@ -54,7 +54,6 @@ const styles = RN.StyleSheet.create({
     elevation: 3,
   },
   message: {
-    fontFamily: 'Roboto-Black',
     fontSize: 16,
     lineHeight: 22,
     textAlign: 'center',

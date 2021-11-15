@@ -25,7 +25,7 @@ const styles = RN.StyleSheet.create({
     borderRadius: 18,
     paddingVertical: 8,
     paddingHorizontal: 8,
-    backgroundColor: 'blue',
+    backgroundColor: 'cornsilk',
     width: 40,
     alignSelf: 'stretch',
     shadowColor: '#000',
