@@ -23,8 +23,8 @@ export const BackButton: React.FC<Props> = ({onPress, style, disabled}) => {
 const styles = RN.StyleSheet.create({
   container: {
     borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     backgroundColor: 'cornsilk',
     width: 40,
     alignSelf: 'stretch',

@@ -47,6 +47,10 @@ const App = () => {
       ? {pass: true, data: data.right}
       : {pass: false, data: {}};
 
+    if (E.isLeft(data)) {
+      RN.Alert.alert('Decocing certificate failed!');
+      console.log(data);
+    }
     setVacPass(nextState);
   };
 
