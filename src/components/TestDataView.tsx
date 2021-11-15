@@ -11,6 +11,9 @@ export const TestDataView: React.FC<Props> = ({data}) => {
   return (
     <>
       <RN.Text>Test</RN.Text>
+      <RN.Text>
+        {data.nam.fn} {data.nam.gn}
+      </RN.Text>
       <RN.Text>Test date: {data.date}</RN.Text>
       <RN.Text>Test result: {data.result}</RN.Text>
       <RN.Text>Test facility: {data.facility}</RN.Text>

@@ -15,7 +15,7 @@ export const BackButton: React.FC<Props> = ({onPress, style, disabled}) => {
       style={[styles.container, style]}
       onPress={onPress}
       disabled={disabled}>
-      <RN.Image source={require('../bx-chevron-left.svg')} />
+      <RN.Image source={require('../svg/bx-chevron-left.svg')} />
     </ButtonContainer>
   );
 };
@@ -23,8 +23,8 @@ export const BackButton: React.FC<Props> = ({onPress, style, disabled}) => {
 const styles = RN.StyleSheet.create({
   container: {
     borderRadius: 18,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     backgroundColor: 'cornsilk',
     width: 40,
     alignSelf: 'stretch',

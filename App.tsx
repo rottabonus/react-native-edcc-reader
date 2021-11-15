@@ -1,12 +1,12 @@
 import React from 'react';
 import * as RN from 'react-native';
 
-import {MessageButton} from './components/MessageButton';
-import {ReaderContainer} from './components/Reader';
+import {MessageButton} from './src/components/MessageButton';
+import {ReaderContainer} from './src/components/Reader';
 
 import * as E from 'fp-ts/lib/Either';
-import {decodeService, VacPass} from './services/VacDecoder';
-import {VacCard} from './components/VacCard';
+import {decodeService, VacPass} from './src/services/VacDecoder';
+import {VacCard} from './src/components/VacCard';
 
 type VacPassState =
   | {
@@ -16,8 +16,7 @@ type VacPassState =
   | {pass: true; data: VacPass};
 
 const App = () => {
-  const [shouldShowReader, setShouldShowReader] =
-    React.useState<boolean>(false);
+  const [isReaderOn, setIsReaderOn] = React.useState<boolean>(false);
 
   const [isScanned, setIsScanned] = React.useState<boolean>(false);
   const [vacPass, setVacPass] = React.useState<VacPassState>({
@@ -27,10 +26,10 @@ const App = () => {
 
   const openCamera = () => {
     setIsScanned(false);
-    setShouldShowReader(true);
+    setIsReaderOn(true);
   };
 
-  const onGoBack = () => setShouldShowReader(false);
+  const onGoBack = () => setIsReaderOn(false);
 
   const scanCode = (value: any) => {
     //https://github.com/teslamotors/react-native-camera-kit
@@ -41,7 +40,7 @@ const App = () => {
       return;
     }
 
-    setShouldShowReader(false);
+    setIsReaderOn(false);
     setIsScanned(true);
     const data = decodeService.decodeVacPass(code);
     const nextState: VacPassState = E.isRight(data)
@@ -51,7 +50,7 @@ const App = () => {
     setVacPass(nextState);
   };
 
-  return shouldShowReader ? (
+  return isReaderOn ? (
     <ReaderContainer onGoBack={onGoBack} scanBarcode={scanCode} />
   ) : (
     <RN.SafeAreaView style={styles.container}>
