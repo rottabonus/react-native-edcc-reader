@@ -91,7 +91,7 @@ export type VacPassName = t.TypeOf<typeof VacPassName>;
 
 const decodeVacPass = (data: string): E.Either<t.Errors, VacPass> => {
   const removedBeginning = data.replace('HC1:', '');
-  let result = decodeBase45(removedBeginning);
+  const result = decodeBase45(removedBeginning);
   const next = result[0] === 0x78 ? zlib.inflate(result) : result.buffer;
   const decoded = cbor.decode(next);
   const payload = cbor.decode(decoded.value[2]);
