@@ -96,8 +96,7 @@ const decodeVacPass = (data: string): E.Either<t.Errors, VacPass> => {
   const decoded = cbor.decode(next);
   const payload = cbor.decode(decoded.value[2]);
   const cert = payload.get(-260).get(1);
-  const resDec = VacPassAll.decode(cert);
-  return E.isRight(resDec) ? E.right(resDec.right) : E.left(resDec.left);
+  return VacPassAll.decode(cert);
 };
 
 export type VacData = {

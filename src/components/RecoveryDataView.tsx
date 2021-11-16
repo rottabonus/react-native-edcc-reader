@@ -3,6 +3,8 @@ import RN from 'react-native';
 
 import {RecData} from '../services/vacDecoder';
 
+import {Text} from './Text';
+
 type Props = {
   data: RecData;
 };
@@ -10,14 +12,26 @@ type Props = {
 export const RecoveryDataView: React.FC<Props> = ({data}) => {
   return (
     <>
-      <RN.Text>Recovery</RN.Text>
-      <RN.Text>
-        {data.nam.fn} {data.nam.gn}
-      </RN.Text>
-      <RN.Text>Disease: {data.disease}</RN.Text>
-      <RN.Text>Recovery from: {data.dateFrom}</RN.Text>
-      <RN.Text>Recovery until: {data.dateUntil}</RN.Text>
-      <RN.Text>Issuer: {data.issuer}</RN.Text>
+      <Text style={[styles.message, styles.header]} message={'Recovery'} />
+      <Text message={`${data.nam.fn} ${data.nam.gn}`} />
+      <Text message={`Disease: ${data.disease}`} />
+      <Text message={`Recovery from: ${data.dateFrom}`} />
+      <Text message={`Recovery until: ${data.dateUntil}`} />
+      <Text message={`Issuer: ${data.issuer}`} />
     </>
   );
 };
+
+const styles = RN.StyleSheet.create({
+  header: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 18,
+    lineHeight: 26,
+  },
+  message: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: 'darkolivegreen',
+  },
+});

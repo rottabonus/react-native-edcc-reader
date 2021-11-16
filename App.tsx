@@ -17,7 +17,6 @@ type VacPassState =
 
 const App = () => {
   const [isReaderOn, setIsReaderOn] = React.useState<boolean>(false);
-
   const [isScanned, setIsScanned] = React.useState<boolean>(false);
   const [vacPass, setVacPass] = React.useState<VacPassState>({
     pass: false,
@@ -32,7 +31,6 @@ const App = () => {
   const onGoBack = () => setIsReaderOn(false);
 
   const scanCode = (value: any) => {
-    //https://github.com/teslamotors/react-native-camera-kit
     // scanning result type is not typed, but the value we want to get is in nativeEvent.codeStringValue --> value.nativeEvent.codeStringValue
     const code: string = value.nativeEvent.codeStringValue;
 
@@ -42,6 +40,7 @@ const App = () => {
 
     setIsReaderOn(false);
     setIsScanned(true);
+
     const data = decodeService.decodeVacPass(code);
     const nextState: VacPassState = E.isRight(data)
       ? {pass: true, data: data.right}
@@ -51,6 +50,7 @@ const App = () => {
       RN.Alert.alert('Decocing certificate failed!');
       console.log(data);
     }
+
     setVacPass(nextState);
   };
 

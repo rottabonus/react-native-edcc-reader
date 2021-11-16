@@ -57,7 +57,7 @@ const styles = RN.StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     textAlign: 'center',
-    color: 'navy',
+    color: 'darkolivegreen',
     flexDirection: 'column',
     marginHorizontal: 8,
   },
