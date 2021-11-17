@@ -4,6 +4,7 @@ import {decodeBase45} from './base45';
 import zlib from 'pako';
 import 'cbor-rn-prereqs';
 import cbor from 'cbor';
+import {flow} from 'fp-ts/lib/function';
 
 // https://ec.europa.eu/health/sitedefault/files/ehealth/docs/covid-certificate_json_specification_en.pdf
 
@@ -89,14 +90,30 @@ export type VacPass = t.TypeOf<typeof VacPassAll>;
 export type VacCertData = t.TypeOf<typeof VacCertData>;
 export type VacPassName = t.TypeOf<typeof VacPassName>;
 
+const removeBeginning = (value: string) => value.replace('HC1:', '');
+
+const zlibInflate = (value: Buffer) =>
+  value[0] === 0x78 ? zlib.inflate(value) : value.buffer;
+
+const decodePayload = (value: ArrayBuffer) => cbor.decode(value);
+const decodeCertData = (decoded: any) => cbor.decode(decoded.value[2]);
+
+const getValue = (value: any) => value.get(-260).get(1);
+
+const parseVacPass = (value: any) => VacPassAll.decode(value);
+
+const unwrap = flow(
+  removeBeginning,
+  decodeBase45,
+  zlibInflate,
+  decodePayload,
+  decodeCertData,
+  getValue,
+  parseVacPass,
+);
+
 const decodeVacPass = (data: string): E.Either<t.Errors, VacPass> => {
-  const removedBeginning = data.replace('HC1:', '');
-  const result = decodeBase45(removedBeginning);
-  const next = result[0] === 0x78 ? zlib.inflate(result) : result.buffer;
-  const decoded = cbor.decode(next);
-  const payload = cbor.decode(decoded.value[2]);
-  const cert = payload.get(-260).get(1);
-  return VacPassAll.decode(cert);
+  return unwrap(data);
 };
 
 export type VacData = {
