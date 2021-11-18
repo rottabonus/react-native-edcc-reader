@@ -1,14 +1,15 @@
 import {Buffer} from 'buffer';
+import * as E from 'fp-ts/lib/Either';
 
 const BASE45_CHARSET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
 
-export const decodeBase45 = (str: string) => {
+export const decodeBase45 = (str: string): E.Either<Error, Buffer> => {
   let output = [];
   let buf = [];
 
   for (let i = 0, length = str.length; i < length; i++) {
     let j = BASE45_CHARSET.indexOf(str[i]);
-    if (j < 0) throw new Error('Base45 decode: unknown character');
+    if (j < 0) return E.left(new Error('Base45 decode: unknown character'));
     buf.push(j);
   }
 
@@ -22,7 +23,7 @@ export const decodeBase45 = (str: string) => {
       output.push(x);
     }
   }
-  return Buffer.from(output);
+  return E.right(Buffer.from(output));
 };
 
 const divmod = (a: number, b: number) => {

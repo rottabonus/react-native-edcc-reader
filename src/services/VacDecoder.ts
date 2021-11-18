@@ -90,31 +90,51 @@ export type VacPass = t.TypeOf<typeof VacPassAll>;
 export type VacCertData = t.TypeOf<typeof VacCertData>;
 export type VacPassName = t.TypeOf<typeof VacPassName>;
 
-const removeBeginning = (value: string) => value.replace('HC1:', '');
+const removeBeginning = (value: string) =>
+  value.startsWith('HC1:')
+    ? E.right(value.replace('HC1:', ''))
+    : E.right(value);
 
 const zlibInflate = (value: Buffer) =>
-  value[0] === 0x78 ? zlib.inflate(value) : value.buffer;
+  value[0] === 0x78
+    ? E.tryCatch(
+        () => zlib.inflate(value),
+        () => new Error(`Zlib inflate failed`),
+      )
+    : E.right(value.buffer);
 
-const decodePayload = (value: ArrayBuffer) => cbor.decode(value);
-const decodeCertData = (decoded: any) => cbor.decode(decoded.value[2]);
+const decodePayload = (value: ArrayBuffer) =>
+  E.tryCatch(
+    () => cbor.decode(value),
+    () => new Error(`Cbor decode fail`),
+  );
 
-const getValue = (value: any) => value.get(-260).get(1);
+const decodeCertData = (decoded: any) => {
+  return decoded.value.length >= 3
+    ? E.tryCatch(
+        () => cbor.decode(decoded.value[2]),
+        () => new Error('Second Cbor decode fail'),
+      )
+    : E.left(new Error('Invalid value in second Cbor decode'));
+};
+
+const getValue = (value: any) =>
+  E.tryCatch(
+    () => value.get(-260).get(1),
+    () => new Error('Error extracting value'),
+  );
 
 const parseVacPass = (value: any) => VacPassAll.decode(value);
 
-const unwrap = flow(
+const decodeVacPass = flow(
   removeBeginning,
-  decodeBase45,
-  zlibInflate,
-  decodePayload,
-  decodeCertData,
-  getValue,
-  parseVacPass,
+  E.chain(decodeBase45),
+  E.chain(zlibInflate),
+  E.chain(decodePayload),
+  E.chain(decodeCertData),
+  E.chain(getValue),
+  E.chainW(parseVacPass),
 );
-
-const decodeVacPass = (data: string): E.Either<t.Errors, VacPass> => {
-  return unwrap(data);
-};
 
 export type VacData = {
   type: 'vaccine';
