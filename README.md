@@ -22,12 +22,12 @@
 $ cd react-native-edcc-reader
 $ npm i
 ```
-
-#### for Android target
+### Start the metro bundler server 
 
 ```console
 $ npx react-native start
 ```
+#### for Android target
 
 On a different terminal
 ```console
@@ -38,7 +38,6 @@ $ npx react-native run-android
 
 ```console
 $ cd ios && pod install && cd ..
-$ npx react-native start
 ```
 
 On a different terminal
